@@ -12,6 +12,8 @@ const ParkingLotConsole = () => {
   const [action, setAction] = useState('addEntry');
   const [message, setMessage] = useState('');
   const [selectedOption, setSelectedOption] = useState('addEntry');
+  const [showResponse, setShowResponse] = useState(false);
+
 
   const handleRadioChange = (event) => {
     setSelectedOption(event.target.value);
@@ -27,7 +29,7 @@ const ParkingLotConsole = () => {
   
 
   const handleAddEntry = () => {
-
+      setShowResponse(true);
     fetch('http://localhost:8080/owner/entry', {
       method: 'POST',
       headers: {
@@ -41,7 +43,7 @@ const ParkingLotConsole = () => {
   };
 
   const handleMarkExit = () => {
-
+    setShowResponse(true);
     fetch(`http://localhost:8080/owner/exit/${vehicleNumber}`, {
       method: 'DELETE',
       headers: {
@@ -58,30 +60,31 @@ const ParkingLotConsole = () => {
     <Dashboard></Dashboard>
     <ParkingLotContainer>
       <h2>Parking Lot Console</h2>
+      <InputContainer>
       <label>
-        Vehicle Plate:
+        Vehicle Plate    <br/>
         <input type="text" value={vehicleNumber} onChange={e => setLicensePlate(e.target.value)} />
       </label>
       <br />
       {selectedOption=="addEntry"&&<>
      
       <label>
-        Vehicle Type:
+        Vehicle Type <br/>
         <input type="text" value={type} onChange={e => setType(e.target.value)} />
       </label>
       <br />
       <label>
-        Owner Name:
-        <input type="text" value={ownerName} onChange={e => setOwnerName(e.target.value)} />
+        Owner Name <br/>
+        <input error="Hi" type="text" value={ownerName} onChange={e => setOwnerName(e.target.value)} />
       </label>
       <br />
       <label>
-        Mobile Number:
+        Mobile Number <br/>
         <input type="text" value={ownerNumber} onChange={e => setOwnerNumber(e.target.value)} />
       </label>
       </>
       }
-      
+      </InputContainer>
       <br />
       
       <div>
@@ -96,9 +99,10 @@ const ParkingLotConsole = () => {
       </Button>
       <br />
       <Button onClick={handleback}>Back</Button>
+      {showResponse&&
       <div>
         <strong>Response:</strong> {message}
-      </div>
+      </div>}
     </ParkingLotContainer>
     </>
   );
@@ -106,6 +110,20 @@ const ParkingLotConsole = () => {
 
 export default ParkingLotConsole;
 
+
+const InputContainer = styled.div`
+max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+`;
 
 const ParkingLotContainer = styled.div`
   max-width: 600px;
