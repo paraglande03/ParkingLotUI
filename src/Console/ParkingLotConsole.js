@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import RadioButton from '../RadioButton';
 import Dashboard from './Dashboard';
+import Loader from './Loader';
 
 const ParkingLotConsole = () => {
   const [vehicleNumber, setLicensePlate] = useState('');
@@ -13,7 +14,7 @@ const ParkingLotConsole = () => {
   const [message, setMessage] = useState('');
   const [selectedOption, setSelectedOption] = useState('addEntry');
   const [showResponse, setShowResponse] = useState(false);
-
+  const [isLoading, setLoading]= useState(false);
 
   const handleRadioChange = (event) => {
     setSelectedOption(event.target.value);
@@ -29,7 +30,7 @@ const ParkingLotConsole = () => {
   
 
   const handleAddEntry = () => {
-      setShowResponse(true);
+      setShowResponse(true)
     fetch('http://localhost:8080/owner/entry', {
       method: 'POST',
       headers: {
@@ -43,6 +44,7 @@ const ParkingLotConsole = () => {
   };
 
   const handleMarkExit = () => {
+    setLoading(true);
     setShowResponse(true);
     fetch(`http://localhost:8080/owner/exit/${vehicleNumber}`, {
       method: 'DELETE',
@@ -50,14 +52,17 @@ const ParkingLotConsole = () => {
         'Content-Type': 'application/json',
       },
     })
+    .then(setLoading(false))
       .then(response => response.json())
-      .then(data => setMessage(data.message))
+      .then(data => setMessage(data.message)
+      )
       .catch(error => console.error('Error:', error));
   };
 
   return (
     <>
     <Dashboard></Dashboard>
+    {isLoading?<Loader/>:
     <ParkingLotContainer>
       <h2>Parking Lot Console</h2>
       <InputContainer>
@@ -104,6 +109,7 @@ const ParkingLotConsole = () => {
         <strong>Response:</strong> {message}
       </div>}
     </ParkingLotContainer>
+   }
     </>
   );
 };
